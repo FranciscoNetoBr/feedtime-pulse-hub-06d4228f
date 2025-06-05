@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Youtube, Instagram, X as TwitterX, Clock, Eye, Heart } from "lucide-react";
 
@@ -8,7 +7,7 @@ const ContentFeed = () => {
   const [page, setPage] = useState(1);
 
   const generateMockPosts = (pageNum: number) => {
-    const platforms = ["youtube", "instagram", "twitter"];
+    const platforms = ["youtube", "instagram", "twitter", "tiktok"];
     const newPosts = [];
 
     for (let i = 0; i < 6; i++) {
@@ -22,10 +21,21 @@ const ContentFeed = () => {
         author: getRandomAuthor(platform),
         time: getRandomTime(),
         stats: getRandomStats(platform),
+        category: getPlatformCategory(platform),
       });
     }
 
     return newPosts;
+  };
+
+  const getPlatformCategory = (platform: string) => {
+    const categories = {
+      youtube: "YouTube em Alta",
+      instagram: "Instagram Stories", 
+      twitter: "Últimas Notícias",
+      tiktok: "TikTok Viral"
+    };
+    return categories[platform as keyof typeof categories];
   };
 
   const getPlatformTitle = (platform: string, index: number) => {
@@ -144,6 +154,7 @@ const ContentFeed = () => {
       case "youtube": return Youtube;
       case "instagram": return Instagram;
       case "twitter": return TwitterX;
+      case "tiktok": return () => <div className="w-4 h-4 bg-current rounded-sm"></div>;
       default: return Youtube;
     }
   };
@@ -153,6 +164,7 @@ const ContentFeed = () => {
       case "youtube": return "text-red-500 border-red-500/30 bg-red-500/10";
       case "instagram": return "text-pink-500 border-pink-500/30 bg-pink-500/10";
       case "twitter": return "text-blue-500 border-blue-500/30 bg-blue-500/10";
+      case "tiktok": return "text-purple-500 border-purple-500/30 bg-purple-500/10";
       default: return "text-orange-500 border-orange-500/30 bg-orange-500/10";
     }
   };
@@ -163,89 +175,94 @@ const ContentFeed = () => {
     return num.toString();
   };
 
+  // Organizar posts por categoria
+  const postsByCategory = posts.reduce((acc, post) => {
+    if (!acc[post.category]) {
+      acc[post.category] = [];
+    }
+    acc[post.category].push(post);
+    return acc;
+  }, {} as { [key: string]: any[] });
+
   return (
     <section className="py-12">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-8">
-          <span className="bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">
-            Destaques Recentes
-          </span>
-        </h2>
+        {Object.entries(postsByCategory).map(([category, categoryPosts]) => (
+          <div key={category} className="mb-12">
+            {/* Header da categoria com ícone laranja */}
+            <div className="flex items-center mb-6">
+              <div className="w-6 h-6 bg-orange-500 rounded-sm flex items-center justify-center mr-3">
+                <span className="text-white font-bold text-xs">📱</span>
+              </div>
+              <h2 className="text-2xl font-bold text-white">{category}</h2>
+            </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {posts.map((post) => {
-            const PlatformIcon = getPlatformIcon(post.platform);
-            return (
-              <article
-                key={post.id}
-                className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-xl overflow-hidden hover:border-orange-500/40 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 group"
-              >
-                <div className="relative">
-                  <img
-                    src={post.image}
-                    alt={post.title}
-                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute top-3 left-3">
-                    <div className={`flex items-center space-x-2 px-3 py-1 rounded-full border backdrop-blur-sm ${getPlatformColor(post.platform)}`}>
-                      <PlatformIcon className="w-4 h-4" />
-                      <span className="text-xs font-medium capitalize">{post.platform}</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {categoryPosts.slice(0, 6).map((post) => {
+                const PlatformIcon = getPlatformIcon(post.platform);
+                return (
+                  <article
+                    key={post.id}
+                    className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-xl overflow-hidden hover:border-orange-500/40 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 group"
+                  >
+                    <div className="relative">
+                      <img
+                        src={post.image}
+                        alt={post.title}
+                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute top-3 left-3">
+                        <div className={`flex items-center space-x-2 px-3 py-1 rounded-full border backdrop-blur-sm ${getPlatformColor(post.platform)}`}>
+                          <PlatformIcon className="w-4 h-4" />
+                          <span className="text-xs font-medium capitalize">{post.platform}</span>
+                        </div>
+                      </div>
+                      <div className="absolute bottom-3 right-3">
+                        <div className="flex items-center space-x-1 px-2 py-1 bg-black/70 rounded-full text-xs text-gray-300">
+                          <Clock className="w-3 h-3" />
+                          <span>{post.time}</span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div className="absolute bottom-3 right-3">
-                    <div className="flex items-center space-x-1 px-2 py-1 bg-black/70 rounded-full text-xs text-gray-300">
-                      <Clock className="w-3 h-3" />
-                      <span>{post.time}</span>
-                    </div>
-                  </div>
-                </div>
 
-                <div className="p-6">
-                  <h3 className="font-bold text-lg mb-2 line-clamp-2 group-hover:text-orange-400 transition-colors">
-                    {post.title}
-                  </h3>
-                  <p className="text-gray-400 text-sm mb-4 line-clamp-3">
-                    {post.description}
-                  </p>
-                  
-                  <div className="flex items-center justify-between text-sm text-gray-500">
-                    <span className="font-medium">{post.author}</span>
-                    <div className="flex items-center space-x-4">
-                      {post.platform === "youtube" && (
-                        <>
-                          <div className="flex items-center space-x-1">
-                            <Eye className="w-4 h-4" />
-                            <span>{formatNumber(post.stats.views)}</span>
-                          </div>
-                          <div className="flex items-center space-x-1">
-                            <Heart className="w-4 h-4" />
-                            <span>{formatNumber(post.stats.likes)}</span>
-                          </div>
-                        </>
-                      )}
-                      {post.platform === "instagram" && (
-                        <>
-                          <div className="flex items-center space-x-1">
-                            <Heart className="w-4 h-4" />
-                            <span>{formatNumber(post.stats.likes)}</span>
-                          </div>
-                        </>
-                      )}
-                      {post.platform === "twitter" && (
-                        <>
-                          <div className="flex items-center space-x-1">
-                            <Heart className="w-4 h-4" />
-                            <span>{formatNumber(post.stats.likes)}</span>
-                          </div>
-                        </>
-                      )}
+                    <div className="p-6">
+                      <h3 className="font-bold text-lg mb-2 line-clamp-2 group-hover:text-orange-400 transition-colors">
+                        {post.title}
+                      </h3>
+                      <p className="text-gray-400 text-sm mb-4 line-clamp-3">
+                        {post.description}
+                      </p>
+                      
+                      <div className="flex items-center justify-between text-sm text-gray-500">
+                        <span className="font-medium">{post.author}</span>
+                        <div className="flex items-center space-x-4">
+                          {post.platform === "youtube" && (
+                            <>
+                              <div className="flex items-center space-x-1">
+                                <Eye className="w-4 h-4" />
+                                <span>{formatNumber(post.stats.views)}</span>
+                              </div>
+                              <div className="flex items-center space-x-1">
+                                <Heart className="w-4 h-4" />
+                                <span>{formatNumber(post.stats.likes)}</span>
+                              </div>
+                            </>
+                          )}
+                          {(post.platform === "instagram" || post.platform === "twitter" || post.platform === "tiktok") && (
+                            <div className="flex items-center space-x-1">
+                              <Heart className="w-4 h-4" />
+                              <span>{formatNumber(post.stats.likes)}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </article>
-            );
-          })}
-        </div>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+        ))}
 
         {loading && (
           <div className="text-center py-12">
