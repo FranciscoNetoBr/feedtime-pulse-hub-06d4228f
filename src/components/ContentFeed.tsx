@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Youtube, Instagram, X as TwitterX, Clock, Eye, Heart } from "lucide-react";
 
@@ -81,14 +80,6 @@ const ContentFeed = () => {
         "Urgente: Eleições 2024",
         "Análise: Mercado Financeiro",
         "Debate: Inteligência Artificial"
-      ],
-      tiktok: [
-        "Dance Challenge Viral",
-        "Receita Rápida em 60 Segundos",
-        "Transformação Incrível",
-        "Comédia do Dia a Dia",
-        "Dicas de Beleza Express",
-        "Trend Musical do Momento"
       ]
     };
     return titles[platform as keyof typeof titles][index % 6];
@@ -98,8 +89,7 @@ const ContentFeed = () => {
     const descriptions = {
       youtube: "Novo vídeo publicado com conteúdo exclusivo e de qualidade. Não perca!",
       instagram: "Nova publicação com fotos incríveis e momentos especiais compartilhados.",
-      twitter: "Thread importante sobre assuntos relevantes e atuais. Confira a discussão completa.",
-      tiktok: "Vídeo curto e viral que está bombando na plataforma. Assista agora!"
+      twitter: "Thread importante sobre assuntos relevantes e atuais. Confira a discussão completa."
     };
     return descriptions[platform as keyof typeof descriptions];
   };
