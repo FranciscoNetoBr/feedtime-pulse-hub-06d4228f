@@ -20,7 +20,6 @@ const Header = () => {
     { name: "Notícias", href: "#" },
     { name: "YouTube", href: "#" },
     { name: "Instagram", href: "#" },
-    { name: "TikTok", href: "#" },
     { name: "X (Twitter)", href: "#" },
   ];
 
