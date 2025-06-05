@@ -175,14 +175,14 @@ const ContentFeed = () => {
     return num.toString();
   };
 
-  // Organizar posts por categoria
-  const postsByCategory = posts.reduce((acc, post) => {
+  // Organizar posts por categoria - Fixed typing issue
+  const postsByCategory = posts.reduce((acc: { [key: string]: any[] }, post) => {
     if (!acc[post.category]) {
       acc[post.category] = [];
     }
     acc[post.category].push(post);
     return acc;
-  }, {} as { [key: string]: any[] });
+  }, {});
 
   return (
     <section className="py-12">
