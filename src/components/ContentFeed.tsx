@@ -53,7 +53,7 @@ const ContentFeed = () => {
       twitter: "Últimas Notícias",
       tiktok: "TikTok Viral"
     };
-    return categories[platform as keyof typeof categories];
+    return categories[platform as keyof typeof categories] || "Conteúdo";
   };
 
   const getPlatformTitle = (platform: string, index: number) => {
@@ -91,7 +91,12 @@ const ContentFeed = () => {
         "Trend Musical do Momento"
       ]
     };
-    return titles[platform as keyof typeof titles][index % 6];
+    
+    const platformTitles = titles[platform as keyof typeof titles];
+    if (!platformTitles || platformTitles.length === 0) {
+      return "Conteúdo Interessante";
+    }
+    return platformTitles[index % platformTitles.length];
   };
 
   const getPlatformDescription = (platform: string) => {
@@ -101,7 +106,7 @@ const ContentFeed = () => {
       twitter: "Thread importante sobre assuntos relevantes e atuais. Confira a discussão completa.",
       tiktok: "Vídeo curto e viral que está bombando na plataforma. Assista agora!"
     };
-    return descriptions[platform as keyof typeof descriptions];
+    return descriptions[platform as keyof typeof descriptions] || "Confira este conteúdo incrível!";
   };
 
   const getRandomUnsplashId = () => {
@@ -120,9 +125,14 @@ const ContentFeed = () => {
     const authors = {
       youtube: ["TechChannel", "MusicVibe", "LifeHacks", "ReviewBR", "CookingPro", "GameZone"],
       instagram: ["@influencer_style", "@fitness_guru", "@travel_lover", "@home_decor", "@art_digital", "@lifestyle_br"],
-      twitter: ["@tech_news", "@crypto_expert", "@political_talk", "@market_analysis", "@ai_researcher", "@breaking_br"]
+      twitter: ["@tech_news", "@crypto_expert", "@political_talk", "@market_analysis", "@ai_researcher", "@breaking_br"],
+      tiktok: ["@viral_creator", "@dance_queen", "@comedy_king", "@life_hacks", "@beauty_tips", "@music_trends"]
     };
+    
     const platformAuthors = authors[platform as keyof typeof authors];
+    if (!platformAuthors || platformAuthors.length === 0) {
+      return "@creator";
+    }
     return platformAuthors[Math.floor(Math.random() * platformAuthors.length)];
   };
 
@@ -202,7 +212,7 @@ const ContentFeed = () => {
     return num.toString();
   };
 
-  // Organizar posts por categoria - Fixed typing issue
+  // Organizar posts por categoria com verificação de segurança
   const postsByCategory = posts.reduce((acc: { [key: string]: Post[] }, post) => {
     if (!acc[post.category]) {
       acc[post.category] = [];
@@ -225,7 +235,7 @@ const ContentFeed = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {categoryPosts.slice(0, 6).map((post) => {
+              {categoryPosts && categoryPosts.length > 0 && categoryPosts.slice(0, 6).map((post) => {
                 const PlatformIcon = getPlatformIcon(post.platform);
                 return (
                   <article
@@ -263,11 +273,11 @@ const ContentFeed = () => {
                       <div className="flex items-center justify-between text-sm text-gray-500">
                         <span className="font-medium">{post.author}</span>
                         <div className="flex items-center space-x-4">
-                          {post.platform === "youtube" && (
+                          {post.platform === "youtube" && post.stats.views && (
                             <>
                               <div className="flex items-center space-x-1">
                                 <Eye className="w-4 h-4" />
-                                <span>{formatNumber(post.stats.views!)}</span>
+                                <span>{formatNumber(post.stats.views)}</span>
                               </div>
                               <div className="flex items-center space-x-1">
                                 <Heart className="w-4 h-4" />
