@@ -1,8 +1,25 @@
 import { useState, useEffect } from "react";
 import { Youtube, Instagram, X as TwitterX, Clock, Eye, Heart } from "lucide-react";
 
+interface Post {
+  id: string;
+  platform: string;
+  title: string;
+  description: string;
+  image: string;
+  author: string;
+  time: string;
+  stats: {
+    views?: number;
+    likes: number;
+    comments?: number;
+    retweets?: number;
+  };
+  category: string;
+}
+
 const ContentFeed = () => {
-  const [posts, setPosts] = useState<any[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
 
@@ -176,7 +193,7 @@ const ContentFeed = () => {
   };
 
   // Organizar posts por categoria - Fixed typing issue
-  const postsByCategory = posts.reduce((acc: { [key: string]: any[] }, post) => {
+  const postsByCategory = posts.reduce((acc: { [key: string]: Post[] }, post) => {
     if (!acc[post.category]) {
       acc[post.category] = [];
     }
@@ -240,7 +257,7 @@ const ContentFeed = () => {
                             <>
                               <div className="flex items-center space-x-1">
                                 <Eye className="w-4 h-4" />
-                                <span>{formatNumber(post.stats.views)}</span>
+                                <span>{formatNumber(post.stats.views!)}</span>
                               </div>
                               <div className="flex items-center space-x-1">
                                 <Heart className="w-4 h-4" />
