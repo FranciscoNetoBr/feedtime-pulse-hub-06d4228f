@@ -1,12 +1,41 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { useState, useEffect } from "react";
+import Header from "@/components/Header";
+import HeroCarousel from "@/components/HeroCarousel";
+import ContentFeed from "@/components/ContentFeed";
+import Footer from "@/components/Footer";
 
 const Index = () => {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate initial content loading
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <p className="text-orange-400 text-lg">Carregando FeedTime...</p>
+        </div>
       </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-black text-white">
+      <Header />
+      <main>
+        <HeroCarousel />
+        <ContentFeed />
+      </main>
+      <Footer />
     </div>
   );
 };
