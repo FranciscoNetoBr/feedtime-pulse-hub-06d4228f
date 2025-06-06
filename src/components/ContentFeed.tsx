@@ -48,10 +48,10 @@ const ContentFeed = () => {
   const getPlatformCategory = (platform: string) => {
     const categories = {
       noticias: "Últimas Notícias",
-      youtube: "YouTube em Alta",
-      tiktok: "TikTok Viral",
-      twitter: "X (Twitter) Trending",
-      instagram: "Instagram Stories"
+      youtube: "YouTube",
+      tiktok: "TikTok",
+      twitter: "X (Twitter)",
+      instagram: "Instagram"
     };
     return categories[platform as keyof typeof categories] || "Conteúdo";
   };
@@ -220,10 +220,10 @@ const ContentFeed = () => {
   const getSectionId = (category: string) => {
     switch (category) {
       case "Últimas Notícias": return "noticias";
-      case "YouTube em Alta": return "youtube";
-      case "TikTok Viral": return "tiktok";
-      case "X (Twitter) Trending": return "twitter";
-      case "Instagram Stories": return "instagram";
+      case "YouTube": return "youtube";
+      case "TikTok": return "tiktok";
+      case "X (Twitter)": return "twitter";
+      case "Instagram": return "instagram";
       default: return "";
     }
   };
@@ -244,10 +244,10 @@ const ContentFeed = () => {
 
   const categoryOrder = [
     "Últimas Notícias",
-    "YouTube em Alta", 
-    "TikTok Viral",
-    "X (Twitter) Trending",
-    "Instagram Stories"
+    "YouTube", 
+    "TikTok",
+    "X (Twitter)",
+    "Instagram"
   ];
 
   return (
