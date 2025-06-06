@@ -5,19 +5,18 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const socialLinks = [
-    { icon: Youtube, href: "#youtube", label: "YouTube", color: "hover:text-red-500" },
-    { icon: Instagram, href: "#instagram", label: "Instagram", color: "hover:text-pink-500" },
-    { icon: TwitterX, href: "#twitter", label: "X (Twitter)", color: "hover:text-blue-500" },
+    { icon: Youtube, href: "#", label: "YouTube", color: "hover:text-red-500" },
+    { icon: Instagram, href: "#", label: "Instagram", color: "hover:text-pink-500" },
+    { icon: TwitterX, href: "#", label: "X (Twitter)", color: "hover:text-blue-500" },
   ];
 
   const footerLinks = {
     "Navegação": [
       { name: "Início", href: "#" },
-      { name: "Últimas Notícias", href: "#noticias" },
-      { name: "YouTube", href: "#youtube" },
-      { name: "TikTok", href: "#tiktok" },
-      { name: "X (Twitter)", href: "#twitter" },
-      { name: "Instagram", href: "#instagram" },
+      { name: "Notícias", href: "#" },
+      { name: "YouTube", href: "#" },
+      { name: "Instagram", href: "#" },
+      { name: "X (Twitter)", href: "#" },
     ],
     "Empresa": [
       { name: "Sobre Nós", href: "#" },
