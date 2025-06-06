@@ -1,314 +1,167 @@
-
 import { useState, useEffect } from "react";
-import { Youtube, Instagram, X as TwitterX, Clock, Eye, Heart } from "lucide-react";
+import { Heart, MessageCircle, Share2, Eye, Youtube, Instagram, X as TwitterX } from "lucide-react";
+
+// Define types for the content feed
+type Platform = "all" | "news" | "youtube" | "instagram" | "twitter" | "tiktok";
 
 interface Post {
-  id: string;
-  platform: string;
+  id: number;
   title: string;
-  description: string;
-  image: string;
-  author: string;
-  time: string;
-  stats: {
-    views?: number;
-    likes: number;
-    comments?: number;
-    retweets?: number;
-  };
-  category: string;
+  content: string;
+  imageUrl: string;
+  platform: Platform;
+  likes: number;
+  comments: number;
+  shares: number;
+  views: number;
 }
+
+// Helper function to generate mock data
+const generateMockPosts = (count: number): Post[] => {
+  const platforms: Platform[] = ["news", "youtube", "instagram", "twitter", "tiktok"];
+  const posts: Post[] = [];
+
+  for (let i = 0; i < count; i++) {
+    const platform = platforms[i % platforms.length];
+    posts.push({
+      id: i + 1,
+      title: `Post ${i + 1} - ${platform}`,
+      content: `This is a mock post from ${platform}.`,
+      imageUrl: `https://source.unsplash.com/800x450/?${platform},${i}`,
+      platform: platform,
+      likes: Math.floor(Math.random() * 500),
+      comments: Math.floor(Math.random() * 100),
+      shares: Math.floor(Math.random() * 50),
+      views: Math.floor(Math.random() * 1000),
+    });
+  }
+
+  return posts;
+};
 
 const ContentFeed = () => {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-
-  const generateMockPosts = (pageNum: number) => {
-    const platforms = ["youtube", "instagram", "twitter", "tiktok"];
-    const newPosts = [];
-
-    for (let i = 0; i < 6; i++) {
-      const platform = platforms[Math.floor(Math.random() * platforms.length)];
-      newPosts.push({
-        id: `${pageNum}-${i}`,
-        platform,
-        title: getPlatformTitle(platform, i),
-        description: getPlatformDescription(platform),
-        image: `https://images.unsplash.com/photo-${getRandomUnsplashId()}?w=400&h=300&fit=crop`,
-        author: getRandomAuthor(platform),
-        time: getRandomTime(),
-        stats: getRandomStats(platform),
-        category: getPlatformCategory(platform),
-      });
-    }
-
-    return newPosts;
-  };
-
-  const getPlatformCategory = (platform: string) => {
-    const categories = {
-      youtube: "YouTube em Alta",
-      instagram: "Instagram Stories", 
-      twitter: "Últimas Notícias",
-      tiktok: "TikTok Viral"
-    };
-    return categories[platform as keyof typeof categories] || "Conteúdo";
-  };
-
-  const getPlatformTitle = (platform: string, index: number) => {
-    const titles = {
-      youtube: [
-        "Tutorial Completo de React 2024",
-        "Top 10 Músicas Mais Tocadas",
-        "Como Ganhar Dinheiro Online",
-        "Review do Novo iPhone",
-        "Receitas Fáceis para o Dia a Dia",
-        "Gaming: Novidades e Gameplay"
-      ],
-      instagram: [
-        "Look do Dia: Estilo Casual",
-        "Receita Fitness para o Café",
-        "Viagem dos Sonhos: Maldivas",
-        "Decoração: Tendências 2024",
-        "Treino em Casa: 15 Minutos",
-        "Arte Digital: Processo Criativo"
-      ],
-      twitter: [
-        "Breaking: Novidades da Tecnologia",
-        "Thread: Dicas de Produtividade",
-        "Opinião: Futuro das Criptomoedas",
-        "Urgente: Eleições 2024",
-        "Análise: Mercado Financeiro",
-        "Debate: Inteligência Artificial"
-      ],
-      tiktok: [
-        "Dance Challenge Viral",
-        "Receita Rápida em 60 Segundos",
-        "Transformação Incrível",
-        "Comédia do Dia a Dia",
-        "Dicas de Beleza Express",
-        "Trend Musical do Momento"
-      ]
-    };
-    
-    const platformTitles = titles[platform as keyof typeof titles];
-    if (!platformTitles || platformTitles.length === 0) {
-      return "Conteúdo Interessante";
-    }
-    return platformTitles[index % platformTitles.length];
-  };
-
-  const getPlatformDescription = (platform: string) => {
-    const descriptions = {
-      youtube: "Novo vídeo publicado com conteúdo exclusivo e de qualidade. Não perca!",
-      instagram: "Nova publicação com fotos incríveis e momentos especiais compartilhados.",
-      twitter: "Thread importante sobre assuntos relevantes e atuais. Confira a discussão completa.",
-      tiktok: "Vídeo curto e viral que está bombando na plataforma. Assista agora!"
-    };
-    return descriptions[platform as keyof typeof descriptions] || "Confira este conteúdo incrível!";
-  };
-
-  const getRandomUnsplashId = () => {
-    const ids = [
-      "1649972904349-6e44c42644a7",
-      "1488590528505-98d2b5aba04b",
-      "1518770660439-4636190af475",
-      "1461749280684-dccba630e2f6",
-      "1581091226825-a6a2a5aee158",
-      "1526374965328-7f61d4dc18c5"
-    ];
-    return ids[Math.floor(Math.random() * ids.length)];
-  };
-
-  const getRandomAuthor = (platform: string) => {
-    const authors = {
-      youtube: ["TechChannel", "MusicVibe", "LifeHacks", "ReviewBR", "CookingPro", "GameZone"],
-      instagram: ["@influencer_style", "@fitness_guru", "@travel_lover", "@home_decor", "@art_digital", "@lifestyle_br"],
-      twitter: ["@tech_news", "@crypto_expert", "@political_talk", "@market_analysis", "@ai_researcher", "@breaking_br"],
-      tiktok: ["@viral_creator", "@dance_queen", "@comedy_king", "@life_hacks", "@beauty_tips", "@music_trends"]
-    };
-    
-    const platformAuthors = authors[platform as keyof typeof authors];
-    if (!platformAuthors || platformAuthors.length === 0) {
-      return "@creator";
-    }
-    return platformAuthors[Math.floor(Math.random() * platformAuthors.length)];
-  };
-
-  const getRandomTime = () => {
-    const times = ["1 min", "5 min", "15 min", "30 min", "1h", "2h", "3h"];
-    return times[Math.floor(Math.random() * times.length)];
-  };
-
-  const getRandomStats = (platform: string) => {
-    if (platform === "youtube") {
-      return {
-        views: Math.floor(Math.random() * 100000) + 1000,
-        likes: Math.floor(Math.random() * 5000) + 100
-      };
-    } else if (platform === "instagram") {
-      return {
-        likes: Math.floor(Math.random() * 10000) + 500,
-        comments: Math.floor(Math.random() * 500) + 10
-      };
-    } else {
-      return {
-        retweets: Math.floor(Math.random() * 1000) + 50,
-        likes: Math.floor(Math.random() * 5000) + 100
-      };
-    }
-  };
-
-  const loadMorePosts = () => {
-    setLoading(true);
-    setTimeout(() => {
-      const newPosts = generateMockPosts(page + 1);
-      setPosts(prev => [...prev, ...newPosts]);
-      setPage(prev => prev + 1);
-      setLoading(false);
-    }, 1000);
-  };
+  const [activeCategory, setActiveCategory] = useState<Platform>("all");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const initialPosts = generateMockPosts(1);
-    setPosts(initialPosts);
+    // Simulate fetching posts from an API
+    const mockPosts = generateMockPosts(30);
+    setPosts(mockPosts);
+    setLoading(false);
+  }, []);
 
-    // Infinite scroll
-    const handleScroll = () => {
-      if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight || loading) {
-        return;
-      }
-      loadMorePosts();
-    };
+  const categories: { id: Platform; name: string; icon?: any }[] = [
+    { id: "all", name: "Todas" },
+    { id: "news", name: "Últimas Notícias" },
+    { id: "youtube", name: "YouTube", icon: Youtube },
+    { id: "tiktok", name: "TikTok" },
+    { id: "twitter", name: "X (Twitter)", icon: TwitterX },
+    { id: "instagram", name: "Instagram", icon: Instagram },
+  ];
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [loading]);
-
-  const getPlatformIcon = (platform: string) => {
-    switch (platform) {
-      case "youtube": return Youtube;
-      case "instagram": return Instagram;
-      case "twitter": return TwitterX;
-      case "tiktok": return () => <div className="w-4 h-4 bg-current rounded-sm"></div>;
-      default: return Youtube;
-    }
-  };
-
-  const getPlatformColor = (platform: string) => {
-    switch (platform) {
-      case "youtube": return "text-red-500 border-red-500/30 bg-red-500/10";
-      case "instagram": return "text-pink-500 border-pink-500/30 bg-pink-500/10";
-      case "twitter": return "text-blue-500 border-blue-500/30 bg-blue-500/10";
-      case "tiktok": return "text-purple-500 border-purple-500/30 bg-purple-500/10";
-      default: return "text-orange-500 border-orange-500/30 bg-orange-500/10";
-    }
-  };
-
-  const formatNumber = (num: number) => {
-    if (num >= 1000000) return (num / 1000000).toFixed(1) + "M";
-    if (num >= 1000) return (num / 1000).toFixed(1) + "K";
-    return num.toString();
-  };
-
-  // Organizar posts por categoria com verificação de segurança
-  const postsByCategory = posts.reduce((acc: { [key: string]: Post[] }, post) => {
-    if (!acc[post.category]) {
-      acc[post.category] = [];
-    }
-    acc[post.category].push(post);
-    return acc;
-  }, {});
+  const filteredPosts = activeCategory === "all"
+    ? posts
+    : posts.filter(post => post.platform === activeCategory);
 
   return (
-    <section className="py-12">
+    <section className="py-16 bg-gray-950">
       <div className="container mx-auto px-4">
-        {Object.entries(postsByCategory).map(([category, categoryPosts]) => (
-          <div key={category} className="mb-12">
-            {/* Header da categoria com ícone laranja */}
-            <div className="flex items-center mb-6">
-              <div className="w-6 h-6 bg-orange-500 rounded-sm flex items-center justify-center mr-3">
-                <span className="text-white font-bold text-xs">📱</span>
-              </div>
-              <h2 className="text-2xl font-bold text-white">{category}</h2>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {categoryPosts && categoryPosts.length > 0 && categoryPosts.slice(0, 6).map((post) => {
-                const PlatformIcon = getPlatformIcon(post.platform);
-                return (
-                  <article
-                    key={post.id}
-                    className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-xl overflow-hidden hover:border-orange-500/40 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 group"
-                  >
-                    <div className="relative">
-                      <img
-                        src={post.image}
-                        alt={post.title}
-                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                      <div className="absolute top-3 left-3">
-                        <div className={`flex items-center space-x-2 px-3 py-1 rounded-full border backdrop-blur-sm ${getPlatformColor(post.platform)}`}>
-                          <PlatformIcon className="w-4 h-4" />
-                          <span className="text-xs font-medium capitalize">{post.platform}</span>
-                        </div>
-                      </div>
-                      <div className="absolute bottom-3 right-3">
-                        <div className="flex items-center space-x-1 px-2 py-1 bg-black/70 rounded-full text-xs text-gray-300">
-                          <Clock className="w-3 h-3" />
-                          <span>{post.time}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="p-6">
-                      <h3 className="font-bold text-lg mb-2 line-clamp-2 group-hover:text-orange-400 transition-colors">
-                        {post.title}
-                      </h3>
-                      <p className="text-gray-400 text-sm mb-4 line-clamp-3">
-                        {post.description}
-                      </p>
-                      
-                      <div className="flex items-center justify-between text-sm text-gray-500">
-                        <span className="font-medium">{post.author}</span>
-                        <div className="flex items-center space-x-4">
-                          {post.platform === "youtube" && post.stats.views && (
-                            <>
-                              <div className="flex items-center space-x-1">
-                                <Eye className="w-4 h-4" />
-                                <span>{formatNumber(post.stats.views)}</span>
-                              </div>
-                              <div className="flex items-center space-x-1">
-                                <Heart className="w-4 h-4" />
-                                <span>{formatNumber(post.stats.likes)}</span>
-                              </div>
-                            </>
-                          )}
-                          {(post.platform === "instagram" || post.platform === "twitter" || post.platform === "tiktok") && (
-                            <div className="flex items-center space-x-1">
-                              <Heart className="w-4 h-4" />
-                              <span>{formatNumber(post.stats.likes)}</span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
+        {/* Section: Últimas Notícias */}
+        <div id="noticias" className="mb-16">
+          <h2 className="text-3xl font-bold mb-8 text-center bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">
+            Últimas Notícias
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {posts.filter(post => post.platform === "news").slice(0, 6).map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))}
           </div>
-        ))}
+        </div>
 
-        {loading && (
-          <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-4"></div>
-            <p className="text-gray-400">Carregando mais conteúdo...</p>
+        {/* Section: YouTube */}
+        <div id="youtube" className="mb-16">
+          <h2 className="text-3xl font-bold mb-8 text-center bg-gradient-to-r from-red-400 to-red-600 bg-clip-text text-transparent">
+            YouTube
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {posts.filter(post => post.platform === "youtube").slice(0, 6).map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))}
           </div>
-        )}
+        </div>
+
+        {/* Section: TikTok */}
+        <div id="tiktok" className="mb-16">
+          <h2 className="text-3xl font-bold mb-8 text-center bg-gradient-to-r from-pink-400 to-purple-600 bg-clip-text text-transparent">
+            TikTok
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {posts.filter(post => post.platform === "tiktok").slice(0, 6).map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))}
+          </div>
+        </div>
+
+        {/* Section: X (Twitter) */}
+        <div id="twitter" className="mb-16">
+          <h2 className="text-3xl font-bold mb-8 text-center bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
+            X (Twitter)
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {posts.filter(post => post.platform === "twitter").slice(0, 6).map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))}
+          </div>
+        </div>
+
+        {/* Section: Instagram */}
+        <div id="instagram" className="mb-16">
+          <h2 className="text-3xl font-bold mb-8 text-center bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent">
+            Instagram
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {posts.filter(post => post.platform === "instagram").slice(0, 6).map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))}
+          </div>
+        </div>
       </div>
     </section>
+  );
+};
+
+interface PostCardProps {
+  post: Post;
+}
+
+const PostCard: React.FC<PostCardProps> = ({ post }) => {
+  return (
+    <div className="rounded-lg overflow-hidden shadow-md bg-gray-800">
+      <img src={post.imageUrl} alt={post.title} className="w-full h-48 object-cover" />
+      <div className="p-4">
+        <h3 className="font-bold text-lg mb-2 text-white">{post.title}</h3>
+        <p className="text-gray-400 text-sm mb-4">{post.content.substring(0, 100)}...</p>
+        <div className="flex justify-between text-gray-500">
+          <div className="flex items-center space-x-2">
+            <Heart className="w-4 h-4" />
+            <span>{post.likes}</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <MessageCircle className="w-4 h-4" />
+            <span>{post.comments}</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Share2 className="w-4 h-4" />
+            <span>{post.shares}</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Eye className="w-4 h-4" />
+            <span>{post.views}</span>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
