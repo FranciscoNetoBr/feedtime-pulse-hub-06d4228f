@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 
@@ -17,11 +16,11 @@ const Header = () => {
 
   const menuItems = [
     { name: "Início", href: "#" },
-    { name: "Notícias", href: "#" },
-    { name: "YouTube", href: "#" },
-    { name: "Instagram", href: "#" },
-    { name: "TikTok", href: "#" },
-    { name: "X (Twitter)", href: "#" },
+    { name: "Últimas Notícias", href: "#noticias" },
+    { name: "YouTube", href: "#youtube" },
+    { name: "TikTok", href: "#tiktok" },
+    { name: "X (Twitter)", href: "#twitter" },
+    { name: "Instagram", href: "#instagram" },
   ];
 
   return (

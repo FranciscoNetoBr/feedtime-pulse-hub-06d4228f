@@ -1,4 +1,3 @@
-
 import { Youtube, Instagram, X as TwitterX, Mail, Phone, MapPin } from "lucide-react";
 
 const Footer = () => {
@@ -13,10 +12,11 @@ const Footer = () => {
   const footerLinks = {
     "Navegação": [
       { name: "Início", href: "#" },
-      { name: "Notícias", href: "#" },
-      { name: "YouTube", href: "#" },
-      { name: "Instagram", href: "#" },
-      { name: "X (Twitter)", href: "#" },
+      { name: "Últimas Notícias", href: "#noticias" },
+      { name: "YouTube", href: "#youtube" },
+      { name: "TikTok", href: "#tiktok" },
+      { name: "X (Twitter)", href: "#twitter" },
+      { name: "Instagram", href: "#instagram" },
     ],
     "Empresa": [
       { name: "Sobre Nós", href: "#" },

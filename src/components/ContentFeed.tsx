@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Youtube, Instagram, X as TwitterX, Clock, Eye, Heart } from "lucide-react";
 
@@ -25,10 +24,10 @@ const ContentFeed = () => {
   const [page, setPage] = useState(1);
 
   const generateMockPosts = (pageNum: number) => {
-    const platforms = ["youtube", "instagram", "twitter", "tiktok"];
+    const platforms = ["noticias", "youtube", "tiktok", "twitter", "instagram"];
     const newPosts = [];
 
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 10; i++) {
       const platform = platforms[Math.floor(Math.random() * platforms.length)];
       newPosts.push({
         id: `${pageNum}-${i}`,
@@ -48,16 +47,25 @@ const ContentFeed = () => {
 
   const getPlatformCategory = (platform: string) => {
     const categories = {
+      noticias: "Últimas Notícias",
       youtube: "YouTube em Alta",
-      instagram: "Instagram Stories", 
-      twitter: "Últimas Notícias",
-      tiktok: "TikTok Viral"
+      tiktok: "TikTok Viral",
+      twitter: "X (Twitter) Trending",
+      instagram: "Instagram Stories"
     };
     return categories[platform as keyof typeof categories] || "Conteúdo";
   };
 
   const getPlatformTitle = (platform: string, index: number) => {
     const titles = {
+      noticias: [
+        "Breaking: Novidades da Tecnologia",
+        "Economia: Mercado em Alta",
+        "Política: Últimas Decisões",
+        "Esporte: Resultados de Hoje",
+        "Ciência: Nova Descoberta",
+        "Mundo: Eventos Importantes"
+      ],
       youtube: [
         "Tutorial Completo de React 2024",
         "Top 10 Músicas Mais Tocadas",
@@ -66,22 +74,6 @@ const ContentFeed = () => {
         "Receitas Fáceis para o Dia a Dia",
         "Gaming: Novidades e Gameplay"
       ],
-      instagram: [
-        "Look do Dia: Estilo Casual",
-        "Receita Fitness para o Café",
-        "Viagem dos Sonhos: Maldivas",
-        "Decoração: Tendências 2024",
-        "Treino em Casa: 15 Minutos",
-        "Arte Digital: Processo Criativo"
-      ],
-      twitter: [
-        "Breaking: Novidades da Tecnologia",
-        "Thread: Dicas de Produtividade",
-        "Opinião: Futuro das Criptomoedas",
-        "Urgente: Eleições 2024",
-        "Análise: Mercado Financeiro",
-        "Debate: Inteligência Artificial"
-      ],
       tiktok: [
         "Dance Challenge Viral",
         "Receita Rápida em 60 Segundos",
@@ -89,6 +81,22 @@ const ContentFeed = () => {
         "Comédia do Dia a Dia",
         "Dicas de Beleza Express",
         "Trend Musical do Momento"
+      ],
+      twitter: [
+        "Thread: Dicas de Produtividade",
+        "Opinião: Futuro das Criptomoedas",
+        "Análise: Mercado Financeiro",
+        "Debate: Inteligência Artificial",
+        "Tendência: Memes do Dia",
+        "Urgente: Notícias de Última Hora"
+      ],
+      instagram: [
+        "Look do Dia: Estilo Casual",
+        "Receita Fitness para o Café",
+        "Viagem dos Sonhos: Maldivas",
+        "Decoração: Tendências 2024",
+        "Treino em Casa: 15 Minutos",
+        "Arte Digital: Processo Criativo"
       ]
     };
     
@@ -101,10 +109,11 @@ const ContentFeed = () => {
 
   const getPlatformDescription = (platform: string) => {
     const descriptions = {
+      noticias: "Fique por dentro das últimas notícias e acontecimentos importantes do Brasil e do mundo.",
       youtube: "Novo vídeo publicado com conteúdo exclusivo e de qualidade. Não perca!",
-      instagram: "Nova publicação com fotos incríveis e momentos especiais compartilhados.",
+      tiktok: "Vídeo curto e viral que está bombando na plataforma. Assista agora!",
       twitter: "Thread importante sobre assuntos relevantes e atuais. Confira a discussão completa.",
-      tiktok: "Vídeo curto e viral que está bombando na plataforma. Assista agora!"
+      instagram: "Nova publicação com fotos incríveis e momentos especiais compartilhados."
     };
     return descriptions[platform as keyof typeof descriptions] || "Confira este conteúdo incrível!";
   };
@@ -123,10 +132,11 @@ const ContentFeed = () => {
 
   const getRandomAuthor = (platform: string) => {
     const authors = {
+      noticias: ["G1", "UOL", "Folha", "Estadão", "CNN Brasil", "Band News"],
       youtube: ["TechChannel", "MusicVibe", "LifeHacks", "ReviewBR", "CookingPro", "GameZone"],
-      instagram: ["@influencer_style", "@fitness_guru", "@travel_lover", "@home_decor", "@art_digital", "@lifestyle_br"],
+      tiktok: ["@viral_creator", "@dance_queen", "@comedy_king", "@life_hacks", "@beauty_tips", "@music_trends"],
       twitter: ["@tech_news", "@crypto_expert", "@political_talk", "@market_analysis", "@ai_researcher", "@breaking_br"],
-      tiktok: ["@viral_creator", "@dance_queen", "@comedy_king", "@life_hacks", "@beauty_tips", "@music_trends"]
+      instagram: ["@influencer_style", "@fitness_guru", "@travel_lover", "@home_decor", "@art_digital", "@lifestyle_br"]
     };
     
     const platformAuthors = authors[platform as keyof typeof authors];
@@ -174,7 +184,6 @@ const ContentFeed = () => {
     const initialPosts = generateMockPosts(1);
     setPosts(initialPosts);
 
-    // Infinite scroll
     const handleScroll = () => {
       if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight || loading) {
         return;
@@ -188,21 +197,34 @@ const ContentFeed = () => {
 
   const getPlatformIcon = (platform: string) => {
     switch (platform) {
+      case "noticias": return () => <div className="w-4 h-4 bg-current rounded-sm">📰</div>;
       case "youtube": return Youtube;
-      case "instagram": return Instagram;
-      case "twitter": return TwitterX;
       case "tiktok": return () => <div className="w-4 h-4 bg-current rounded-sm"></div>;
+      case "twitter": return TwitterX;
+      case "instagram": return Instagram;
       default: return Youtube;
     }
   };
 
   const getPlatformColor = (platform: string) => {
     switch (platform) {
+      case "noticias": return "text-orange-500 border-orange-500/30 bg-orange-500/10";
       case "youtube": return "text-red-500 border-red-500/30 bg-red-500/10";
-      case "instagram": return "text-pink-500 border-pink-500/30 bg-pink-500/10";
-      case "twitter": return "text-blue-500 border-blue-500/30 bg-blue-500/10";
       case "tiktok": return "text-purple-500 border-purple-500/30 bg-purple-500/10";
+      case "twitter": return "text-blue-500 border-blue-500/30 bg-blue-500/10";
+      case "instagram": return "text-pink-500 border-pink-500/30 bg-pink-500/10";
       default: return "text-orange-500 border-orange-500/30 bg-orange-500/10";
+    }
+  };
+
+  const getSectionId = (category: string) => {
+    switch (category) {
+      case "Últimas Notícias": return "noticias";
+      case "YouTube em Alta": return "youtube";
+      case "TikTok Viral": return "tiktok";
+      case "X (Twitter) Trending": return "twitter";
+      case "Instagram Stories": return "instagram";
+      default: return "";
     }
   };
 
@@ -212,7 +234,6 @@ const ContentFeed = () => {
     return num.toString();
   };
 
-  // Organizar posts por categoria com verificação de segurança
   const postsByCategory = posts.reduce((acc: { [key: string]: Post[] }, post) => {
     if (!acc[post.category]) {
       acc[post.category] = [];
@@ -221,85 +242,97 @@ const ContentFeed = () => {
     return acc;
   }, {});
 
+  const categoryOrder = [
+    "Últimas Notícias",
+    "YouTube em Alta", 
+    "TikTok Viral",
+    "X (Twitter) Trending",
+    "Instagram Stories"
+  ];
+
   return (
     <section className="py-12">
       <div className="container mx-auto px-4">
-        {Object.entries(postsByCategory).map(([category, categoryPosts]) => (
-          <div key={category} className="mb-12">
-            {/* Header da categoria com ícone laranja */}
-            <div className="flex items-center mb-6">
-              <div className="w-6 h-6 bg-orange-500 rounded-sm flex items-center justify-center mr-3">
-                <span className="text-white font-bold text-xs">📱</span>
+        {categoryOrder.map((category) => {
+          const categoryPosts = postsByCategory[category];
+          if (!categoryPosts || categoryPosts.length === 0) return null;
+          
+          return (
+            <div key={category} id={getSectionId(category)} className="mb-12">
+              <div className="flex items-center mb-6">
+                <div className="w-6 h-6 bg-orange-500 rounded-sm flex items-center justify-center mr-3">
+                  <span className="text-white font-bold text-xs">📱</span>
+                </div>
+                <h2 className="text-2xl font-bold text-white">{category}</h2>
               </div>
-              <h2 className="text-2xl font-bold text-white">{category}</h2>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {categoryPosts && categoryPosts.length > 0 && categoryPosts.slice(0, 6).map((post) => {
-                const PlatformIcon = getPlatformIcon(post.platform);
-                return (
-                  <article
-                    key={post.id}
-                    className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-xl overflow-hidden hover:border-orange-500/40 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 group"
-                  >
-                    <div className="relative">
-                      <img
-                        src={post.image}
-                        alt={post.title}
-                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                      <div className="absolute top-3 left-3">
-                        <div className={`flex items-center space-x-2 px-3 py-1 rounded-full border backdrop-blur-sm ${getPlatformColor(post.platform)}`}>
-                          <PlatformIcon className="w-4 h-4" />
-                          <span className="text-xs font-medium capitalize">{post.platform}</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {categoryPosts.slice(0, 6).map((post) => {
+                  const PlatformIcon = getPlatformIcon(post.platform);
+                  return (
+                    <article
+                      key={post.id}
+                      className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-xl overflow-hidden hover:border-orange-500/40 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 group"
+                    >
+                      <div className="relative">
+                        <img
+                          src={post.image}
+                          alt={post.title}
+                          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        <div className="absolute top-3 left-3">
+                          <div className={`flex items-center space-x-2 px-3 py-1 rounded-full border backdrop-blur-sm ${getPlatformColor(post.platform)}`}>
+                            <PlatformIcon className="w-4 h-4" />
+                            <span className="text-xs font-medium capitalize">{post.platform}</span>
+                          </div>
+                        </div>
+                        <div className="absolute bottom-3 right-3">
+                          <div className="flex items-center space-x-1 px-2 py-1 bg-black/70 rounded-full text-xs text-gray-300">
+                            <Clock className="w-3 h-3" />
+                            <span>{post.time}</span>
+                          </div>
                         </div>
                       </div>
-                      <div className="absolute bottom-3 right-3">
-                        <div className="flex items-center space-x-1 px-2 py-1 bg-black/70 rounded-full text-xs text-gray-300">
-                          <Clock className="w-3 h-3" />
-                          <span>{post.time}</span>
-                        </div>
-                      </div>
-                    </div>
 
-                    <div className="p-6">
-                      <h3 className="font-bold text-lg mb-2 line-clamp-2 group-hover:text-orange-400 transition-colors">
-                        {post.title}
-                      </h3>
-                      <p className="text-gray-400 text-sm mb-4 line-clamp-3">
-                        {post.description}
-                      </p>
-                      
-                      <div className="flex items-center justify-between text-sm text-gray-500">
-                        <span className="font-medium">{post.author}</span>
-                        <div className="flex items-center space-x-4">
-                          {post.platform === "youtube" && post.stats.views && (
-                            <>
-                              <div className="flex items-center space-x-1">
-                                <Eye className="w-4 h-4" />
-                                <span>{formatNumber(post.stats.views)}</span>
-                              </div>
+                      <div className="p-6">
+                        <h3 className="font-bold text-lg mb-2 line-clamp-2 group-hover:text-orange-400 transition-colors">
+                          {post.title}
+                        </h3>
+                        <p className="text-gray-400 text-sm mb-4 line-clamp-3">
+                          {post.description}
+                        </p>
+                        
+                        <div className="flex items-center justify-between text-sm text-gray-500">
+                          <span className="font-medium">{post.author}</span>
+                          <div className="flex items-center space-x-4">
+                            {post.platform === "youtube" && post.stats.views && (
+                              <>
+                                <div className="flex items-center space-x-1">
+                                  <Eye className="w-4 h-4" />
+                                  <span>{formatNumber(post.stats.views)}</span>
+                                </div>
+                                <div className="flex items-center space-x-1">
+                                  <Heart className="w-4 h-4" />
+                                  <span>{formatNumber(post.stats.likes)}</span>
+                                </div>
+                              </>
+                            )}
+                            {(post.platform === "instagram" || post.platform === "twitter" || post.platform === "tiktok" || post.platform === "noticias") && (
                               <div className="flex items-center space-x-1">
                                 <Heart className="w-4 h-4" />
                                 <span>{formatNumber(post.stats.likes)}</span>
                               </div>
-                            </>
-                          )}
-                          {(post.platform === "instagram" || post.platform === "twitter" || post.platform === "tiktok") && (
-                            <div className="flex items-center space-x-1">
-                              <Heart className="w-4 h-4" />
-                              <span>{formatNumber(post.stats.likes)}</span>
-                            </div>
-                          )}
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </article>
-                );
-              })}
+                    </article>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
 
         {loading && (
           <div className="text-center py-12">
